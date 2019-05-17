@@ -19,5 +19,9 @@ class gridcollector extends Module
         parent::__construct();
 
         $this->displayName = 'GridCollector module';
+        $this->ps_versions_compliancy = [
+            'min' => '1.7.5.0',
+            'max' => _PS_VERSION_,
+        ];
     }
 }
