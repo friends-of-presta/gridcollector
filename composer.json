@@ -1,0 +1,11 @@
+{
+    "name": "friends-of-prestashop/gridcollector",
+    "description": "Enable Grid Data Collector for PrestaShop grids",
+    "autoload": {
+        "psr-4": {
+            "Fop\\GridCollector": "src/"
+        }
+    },
+    "license": "MIT",
+    "type": "prestashop-module"
+}
