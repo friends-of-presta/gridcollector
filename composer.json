@@ -3,7 +3,7 @@
     "description": "Enable Grid Data Collector for PrestaShop grids",
     "autoload": {
         "psr-4": {
-            "Fop\\GridCollector": "src/"
+            "FOP\\GridCollector\\": "src/"
         }
     },
     "license": "MIT",

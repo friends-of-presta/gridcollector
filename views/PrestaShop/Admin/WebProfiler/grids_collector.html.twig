@@ -1,0 +1,61 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% import _self as helper %}
+
+{% block toolbar %}
+  {% set icon %}
+    {{ include('@WebProfiler/Icon/event.svg') }}
+    <span class="sf-toolbar-value">Grids ({{ collector.grids|length }})</span>
+  {% endset %}
+
+  {% set text %}
+    <div class="sf-toolbar-info-piece">
+      <div class="sf-toolbar-info-piece">
+        <b class="sf-toolbar-ajax-info">Grids ({{ collector.grids|length }})</b>
+      </div>
+      <div class="sf-toolbar-info-piece">
+        <table class="sf-toolbar-ajax-requests">
+          <thead>
+          <tr>
+            <th>Grid id</th>
+            <th>Grid name</th>
+          </tr>
+          </thead>
+          <tbody class="sf-toolbar-ajax-request-list">
+          {% for id, grid in collector.grids %}
+            <tr>
+              <td><i>{{ id }}</i></td>
+              <td>{{ grid.name }}</td>
+            </tr>
+          {% else %}
+            <tr><td colspan="2">No Grid rendered.</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endset %}
+
+  {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: true }) }}
+
+{% endblock %}
+
+{% block menu %}
+  {# This left-hand menu appears when using the full-screen profiler. #}
+  <span class="label">
+        <span class="icon">{{ include('@WebProfiler/Icon/event.svg') }}</span>
+        <strong>Grids</strong>
+    </span>
+{% endblock %}
+
+{% block panel %}
+  <h2>Grids</h2>
+
+  {% if collector.grids is empty %}
+    <div class="empty">
+      <p>No Grids have been rendered.</p>
+    </div>
+  {% else %}
+    {{ dump(collector.grids) }}
+  {% endif %}
+{% endblock %}

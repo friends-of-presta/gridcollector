@@ -2,3 +2,25 @@ services:
     _defaults:
         # make all services accessible directly from container
         public: true
+
+    fop.grid.reporter:
+      class: FOP\GridCollector\Grid\Reporter
+
+    fop.grid.grid_data_collector:
+      class: FOP\GridCollector\Grid\GridDataCollector
+      arguments: ['@fop.grid.reporter']
+      tags:
+        - name:     data_collector
+          template: '@PrestaShop/Admin/WebProfiler/grids_collector.html.twig'
+          id:       'fop.grids_collector'
+
+    fop.original_grid_presenter:
+      class: 'PrestaShop\PrestaShop\Core\Grid\Presenter\GridPresenter'
+      arguments:
+        - '@prestashop.core.hook.dispatcher'
+
+    prestashop.core.grid.presenter.grid_presenter:
+      class: FOP\GridCollector\Grid\DecoratedPresenter
+      arguments:
+        - '@fop.original_grid_presenter'
+        - '@fop.grid.reporter'

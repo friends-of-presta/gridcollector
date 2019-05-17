@@ -1,7 +1,11 @@
 <?php
 
-require_once __DIR__.'/vendor/autoload.php';
-
+/**
+ * @author Mickaël Andrieu <mickael.andrieu@prestashop.com>
+ *
+ * This module register a new tool in debug toolbar to provide information
+ * about the grids displayed on the current pages.
+ */
 class gridcollector extends Module
 {
     /**
