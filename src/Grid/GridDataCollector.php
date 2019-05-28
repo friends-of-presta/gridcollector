@@ -24,8 +24,10 @@ final class GridDataCollector extends DataCollector
      */
     public function collect(Request $request, Response $response, Exception $exception = null)
     {
+        $report = $this->reporter->generateReport();
+
         $this->data = [
-            'grids' => $this->reporter->generateReport(),
+            'grids' => $this->improveReport($report),
         ];
     }
 
@@ -48,5 +50,21 @@ final class GridDataCollector extends DataCollector
     public function getGrids()
     {
         return $this->data['grids'];
+    }
+
+    /**
+     * @param array $report
+     * @return array
+     */
+    private function improveReport(array &$report)
+    {
+        foreach ($report as &$reportEntry) {
+            $reportEntry['data']['records'] = $this->cloneVar($reportEntry['data']['records']);
+            foreach ($reportEntry['columns'] as $columnIndex => $column) {
+                $reportEntry['columns'][$columnIndex]['options'] = $this->cloneVar($reportEntry['columns'][$columnIndex]['options']);
+            }
+        }
+
+        return $report;
     }
 }

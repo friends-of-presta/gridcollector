@@ -43,19 +43,120 @@
 {% block menu %}
   {# This left-hand menu appears when using the full-screen profiler. #}
   <span class="label">
-        <span class="icon">{{ include('@WebProfiler/Icon/event.svg') }}</span>
-        <strong>Grids</strong>
-    </span>
+    <span class="icon">{{ include('@WebProfiler/Icon/event.svg') }}</span>
+    <strong>Grids</strong>
+  </span>
 {% endblock %}
 
 {% block panel %}
-  <h2>Grids</h2>
+      <h2>Grids</h2>
+        <div class="sf-tabs">
+          {% for id, grid in collector.grids %}
+            {%
+              set gridName, gridId = grid.name|title, id|camelize
+            %}
+            <div class="tab">
+              <span class="tab-title">{{ gridName }}</span>
+              <h3>{{ gridName }}</h3>
+              <div class="tab-content">
+                <h4>Columns</h4>
+                <table class="ps-grid">
+                  <thead>
+                  <tr>
+                    <th>Name (id)</th>
+                    <th>Type</th>
+                    <th>Options</th>
+                  </tr>
+                  </thead>
+                  {% for column in grid.columns %}
+                    <tr>
+                      <td>
+                        {{ column.name ?? 'N/A' }}({{ column.id }})
+                      </td>
+                      <td>
+                        <span title="{{ column.column_path }}" style="cursor: pointer;">{{ column.type|camelize }}</span>
+                      </td>
+                      <td>
+                        {{ profiler_dump(column.options) }}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </table>
 
-  {% if collector.grids is empty %}
-    <div class="empty">
-      <p>No Grids have been rendered.</p>
-    </div>
-  {% else %}
-    {{ dump(collector.grids) }}
-  {% endif %}
+                <h4>Data ({{ grid.data.records_total }} Items)</h4>
+                <table class="ps-grid-data">
+                  <thead>
+                  <tr>
+                    <th>Retrieved Data</th>
+                    <th>Doctrine Query</th>
+                  </tr>
+                  </thead>
+                  <tr>
+                    <td width="50%">{{ profiler_dump(grid.data.records) }}</td>
+                    <td>{{ grid.data.query }}</td>
+                  </tr>
+                </table>
+
+                <h4>Hooks</h4>
+                <table class="ps-grid-data">
+                  <thead>
+                  <tr>
+                    <th>Hook name</th>
+                    <th>Template</th>
+                  </tr>
+                  </thead>
+                  <tr>
+                    <td><b>action{{ gridId }}GridDefinitionModifier</b></td>
+                    <td>
+                      {{ include('@Modules/gridcollector/views/docs/grid_definition_modifier.html.twig', {
+                        'id': gridId,
+                        'name': gridName
+                      })|highlight|raw }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><b>action{{ gridId }}GridDataModifier</b></td>
+                    <td>
+                      {{ include('@Modules/gridcollector/views/docs/grid_data_modifier.html.twig', {
+                        'id': gridId,
+                        'name': gridName
+                      })|highlight|raw }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><b>action{{ gridId }}GridFilterFormModifier</b></td>
+                    <td>
+                      {{ include('@Modules/gridcollector/views/docs/grid_filter_form_modifier.html.twig', {
+                        'id': gridId,
+                        'name': gridName
+                      })|highlight|raw }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><b>action{{ gridId }}GridQueryBuilderModifier</b></td>
+                    <td>
+                      {{ include('@Modules/gridcollector/views/docs/grid_query_builder_modifier.html.twig', {
+                        'id': gridId,
+                        'name': gridName
+                      })|highlight|raw }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><b>action{{ gridId }}GridPresenterModifier</b></td>
+                    <td>
+                      {{ include('@Modules/gridcollector/views/docs/grid_presenter_modifier.html.twig', {
+                        'id': gridId,
+                        'name': gridName
+                      })|highlight|raw }}
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          {% else %}<
+            <div class="empty">
+              <p>No Grids have been rendered.</p>
+            </div>
+          {% endfor %}
+        </div>
 {% endblock %}

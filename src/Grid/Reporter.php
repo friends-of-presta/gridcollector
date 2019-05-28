@@ -2,8 +2,12 @@
 
 namespace FOP\GridCollector\Grid;
 
+use PrestaShop\PrestaShop\Core\Grid\Column\ColumnCollectionInterface;
+use PrestaShop\PrestaShop\Core\Grid\Column\ColumnInterface;
+use PrestaShop\PrestaShop\Core\Grid\Data\GridDataInterface;
 use PrestaShop\PrestaShop\Core\Grid\Definition\GridDefinition;
 use PrestaShop\PrestaShop\Core\Grid\GridInterface;
+use ReflectionClass;
 
 final class Reporter
 {
@@ -26,11 +30,39 @@ final class Reporter
             $definition = $grid->getDefinition();
             $report[$definition->getId()] = [
                 'name' => $definition->getName(),
-                'columns' => $definition->getColumns(),
-                'data' => $grid->getData(),
+                'columns' => $this->generateGridColumns($definition->getColumns()),
+                'data' => $this->generateGridData($grid->getData()),
             ];
         }
 
         return $report;
+    }
+
+    private function generateGridData(GridDataInterface $gridData)
+    {
+        return [
+            'records' => $gridData->getRecords(),
+            'query' => $gridData->getQuery(),
+            'records_total' => $gridData->getRecordsTotal(),
+        ];
+    }
+
+    private function generateGridColumns(ColumnCollectionInterface $columnCollection)
+    {
+        $columns = [];
+
+        /** @var ColumnInterface $column */
+        foreach ($columnCollection as $column) {
+            $reflection = new ReflectionClass($column);
+            $columns[] = [
+                'id' => $column->getId(),
+                'name' => $column->getName(),
+                'type' => $column->getType(),
+                'options' => $column->getOptions(),
+                'column_path' => $reflection->getFileName(),
+            ];
+        }
+
+        return $columns;
     }
 }

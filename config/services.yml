@@ -24,3 +24,8 @@ services:
       arguments:
         - '@fop.original_grid_presenter'
         - '@fop.grid.reporter'
+
+    fop.highlight.twig_extension:
+      class: FOP\GridCollector\Twig\CodeHighlightExtension
+      tags:
+        - { name: twig.extension }
