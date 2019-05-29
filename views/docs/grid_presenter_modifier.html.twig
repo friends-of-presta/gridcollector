@@ -8,5 +8,8 @@
  */
  public function hookAction{{ id|capitalize }}GridPresenterModifier(array $params)
  {
+     /** @var array $presentedGrid */
+     $presentedGrid = $params['presented_grid'];
 
+     dump($presentedGrid);
  }
